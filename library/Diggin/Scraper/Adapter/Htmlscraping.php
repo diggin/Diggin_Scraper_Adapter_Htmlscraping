@@ -30,6 +30,11 @@ require_once 'Diggin/Scraper/Adapter/Interface.php';
 
 class Diggin_Scraper_Adapter_Htmlscraping implements Diggin_Scraper_Adapter_Interface 
 {
+    /**
+     * Configuration array, set using the constructor or using ::setConfig()
+     *
+     * @var array
+     */
     protected $config = array();
 
     /*
@@ -121,7 +126,8 @@ class Diggin_Scraper_Adapter_Htmlscraping implements Diggin_Scraper_Adapter_Inte
      *
      * @param  string  $url
      * @param  string $responseBody
-     * @return array
+     * @return string 
+     * @throws Diggin_Scraper_Adapter_Exception
      */
     final public function getXhtml($response)
     {
@@ -268,6 +274,8 @@ class Diggin_Scraper_Adapter_Htmlscraping implements Diggin_Scraper_Adapter_Inte
     }
 
     /**
+     * backup (Html and Xml comment)
+     * 
      * @param  array   $matches
      * @return string
      */
@@ -281,14 +289,22 @@ class Diggin_Scraper_Adapter_Htmlscraping implements Diggin_Scraper_Adapter_Inte
     }
     
     /**
+     * Reading Response as SimpleXmlElement
      * 
-     * @return 
+     * @return SimplXmlElement
      */
     public function readData($response)
     {
         return $this->getXmlObject($response);
     }
     
+    /**
+     * Set configuration parameters for this
+     *
+     * @param array $config
+     * @return Diggin_Scraper_Adapter_Loadhtml
+     * @throws Diggin_Scraper_Adapter_Exception
+     */
     public function setConfig($config = array())
     {
         if (!is_array($config)) {

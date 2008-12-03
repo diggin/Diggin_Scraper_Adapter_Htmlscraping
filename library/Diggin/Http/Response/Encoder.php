@@ -75,7 +75,8 @@ class Diggin_Http_Response_Encoder
             @mb_convert_variables('UTF-8', $encoding, $responseBody, $convertVars);
         } else {
             if (false === $responseBody = @iconv($encoding, 'UTF-8', $responseBody)) {
-                throw new Exception('Failed converting character encoding.');
+                require_once 'Diggin/Http/Response/Encoder/Exception.php';
+                throw new Diggin_Http_Response_Encoder_Exception('Failed converting character encoding.');
             }
             foreach ($convertVars as $key => $value) {
                 if (false === $convertVars[$key] = @iconv($encoding, 'UTF-8', $value)) {
@@ -89,9 +90,7 @@ class Diggin_Http_Response_Encoder
     }
 
     /**
-     * Get Charset from CType
-     * 
-     * @param  string  $string ('content-type')
+     * @param  string  $string
      * @return mixed
      */
     protected static function _getCharsetFromCType($string)

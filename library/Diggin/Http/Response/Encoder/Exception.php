@@ -19,5 +19,5 @@
  */
 require_once 'Diggin/Http/Response/Exception.php';
 
-class Diggin_Http_Response_Encoder_Exception extends Diggin_Exception
+class Diggin_Http_Response_Encoder_Exception extends Diggin_Http_Response_Exception
 {}
