@@ -14,17 +14,16 @@
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
 
-/** 
- * @see Diggin_Scraper_Exception
+/**
+ * @see Diggin_Exception
  */
-require_once 'Diggin/Scraper/Exception.php';
+require_once 'Diggin/Exception.php';
 
 /**
  * @category   Diggin
  * @package    Diggin_Scraper
- * @subpackage Adapter
  * @copyright  2006-2008 sasezaki (http://diggin.musicrider.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
-class Diggin_Scraper_Adapter_Exception extends Diggin_Scraper_Exception
+class Diggin_Scraper_Exception extends Diggin_Exception
 {}

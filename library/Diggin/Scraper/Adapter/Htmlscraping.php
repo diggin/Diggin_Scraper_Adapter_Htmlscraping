@@ -302,7 +302,7 @@ class Diggin_Scraper_Adapter_Htmlscraping implements Diggin_Scraper_Adapter_Inte
      * Set configuration parameters for this
      *
      * @param array $config
-     * @return Diggin_Scraper_Adapter_Loadhtml
+     * @return Diggin_Scraper_Adapter_Htmlscraping
      * @throws Diggin_Scraper_Adapter_Exception
      */
     public function setConfig($config = array())
