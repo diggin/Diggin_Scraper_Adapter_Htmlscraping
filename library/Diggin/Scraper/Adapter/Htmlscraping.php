@@ -37,12 +37,12 @@ class Diggin_Scraper_Adapter_Htmlscraping implements Diggin_Scraper_Adapter_Inte
      */
     protected $config = array();
 
-    /*
+    /**
      * @var array
      */
     private $backup = array();
 
-    /*
+    /**
      * @var integer
      */
     private $backup_count = 0;
@@ -234,6 +234,7 @@ class Diggin_Scraper_Adapter_Htmlscraping implements Diggin_Scraper_Adapter_Inte
         list($responseBody, $this->backup) = 
         Diggin_Http_Response_Encoder::encode($responseBody,
                                              $response->getHeader('content-type'),
+                                             'UTF-8',
                                              $this->backup);
         /*
          * Restore CDATAs and comments.
@@ -245,14 +246,20 @@ class Diggin_Scraper_Adapter_Htmlscraping implements Diggin_Scraper_Adapter_Inte
          * Use Tidy to format HTML if available.
          * Otherwise, use HTMLParser class (is slower and consumes much memory).
          */
-        $responseBody = str_replace('&', '&amp;', $responseBody);
         
         if (extension_loaded('tidy')) {
+            //$responseBody = str_replace('><</', '>&lt;</', $responseBody);
+            //$responseBody = str_replace('><<</', '>&lt;&lt;</', $responseBody);
+            //$responseBody = str_replace('><<', '>&lt;<', $responseBody);
+            //$responseBody = preg_replace('/>(<+)<\//s', '>$1<', $responseBody);
+            $responseBody = str_replace('&', '&amp;', $responseBody);
             $tidy = new tidy;
             $tidy->parseString($responseBody, array('output-xhtml' => true), 'UTF8');
             $tidy->cleanRepair();
             $responseBody = $tidy->html();
+            //$responseBody = str_replace('&amp;lt;', '&lt;', $responseBody);
         } else {
+            $responseBody = str_replace('&', '&amp;', $responseBody);
             require_once 'HTMLParser.class.php';
             $parser = new HTMLParser;
             $format_rule = require 'xhtml1-transitional_dtd.inc.php';
