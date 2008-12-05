@@ -34,17 +34,70 @@
 class Diggin_Http_Response_Encoder
 {
     /**
-     * encode to UTF-8
+     * encoding
      * 
      * @param string $responseBody
      * @param string $response->getHeader('content-type')
+     * @param string $encodingto
      * @param string $convertVars (optional)
-     * @return array
+     * @return mixed
      * @throws Diggin_Http_Response_Encoder_Exception
      */
-    public static function encode($responseBody, $contentType = null, $convertVars = array())
+    public static function encode($responseBody, $contentType = null, $encodingto = 'UTF-8', $convertVars = array())
     {
         
+        $encodingfrom = self::detect($responseBody, $contentType);
+        
+        /*
+         * Use mbstring to convert character encoding if available.
+         * Otherwise use iconv (iconv may try to detect character encoding automatically).
+         * Do not trust the declared encoding and do conversion even if UTF-8.
+         */
+        if (extension_loaded('mbstring')) {
+            @mb_convert_variables($encodingto, $encodingfrom, $responseBody, $convertVars);
+        } else {
+            if (false === $responseBody = @iconv($encodingfrom, $encodingto, $responseBody)) {
+                require_once 'Diggin/Http/Response/Encoder/Exception.php';
+                throw new Diggin_Http_Response_Encoder_Exception('Failed converting character encoding.');
+            }
+            foreach ($convertVars as $key => $value) {
+                if (false === $convertVars[$key] = @iconv($encodingfrom, $encodingto, $value)) {
+                    require_once 'Diggin/Http/Response/Encoder/Exception.php';
+                    throw new Diggin_Http_Response_Encoder_Exception('Failed converting character encoding.');
+                }
+            }
+        }
+        return (count(func_get_args()) === 4) ? array($responseBody, $convertVars): $responseBody;
+    }
+    
+    /**
+     * encode from response object
+     *
+     * @param object $response
+     * @return string
+     */
+    public static function encodeFromObject($response, $encodingto = 'UTF-8')
+    {
+        if ($response instanceof Zend_Http_Response or
+            $response instanceof HTTP_Request2_Response) {
+            return self::encode($response->getBody(), 
+                                $response->getHeader('content-type'),
+                                $encodingto);
+        } else {
+            require_once 'Diggin/Http/Response/Encoder/Exception.php';
+            throw new Diggin_Http_Response_Encoder_Exception('Unknown Object Type..');
+        }
+    }
+    
+    /**
+     * detect response encoding (html)
+     *
+     * @param string $responseBody
+     * @param string $contentType
+     * @return string $encoding
+     */
+    public static function detect($responseBody, $contentType = null)
+    {
         $encoding = false;
         if (isset($contentType)) {
             $encoding = self::_getCharsetFromCType($contentType);
@@ -72,21 +125,9 @@ class Diggin_Http_Response_Encoder
                     throw new Diggin_Http_Response_Encoder_Exception('Failed detecting character encoding.');
                 }
             }
-            @mb_convert_variables('UTF-8', $encoding, $responseBody, $convertVars);
-        } else {
-            if (false === $responseBody = @iconv($encoding, 'UTF-8', $responseBody)) {
-                require_once 'Diggin/Http/Response/Encoder/Exception.php';
-                throw new Diggin_Http_Response_Encoder_Exception('Failed converting character encoding.');
-            }
-            foreach ($convertVars as $key => $value) {
-                if (false === $convertVars[$key] = @iconv($encoding, 'UTF-8', $value)) {
-                    require_once 'Diggin/Http/Response/Encoder/Exception.php';
-                    throw new Diggin_Http_Response_Encoder_Exception('Failed converting character encoding.');
-                }
-            }
         }
-
-        return array($responseBody, $convertVars);
+        
+        return $encoding;
     }
 
     /**
@@ -129,5 +170,4 @@ class Diggin_Http_Response_Encoder
             return false;
         }
     }
-
 }

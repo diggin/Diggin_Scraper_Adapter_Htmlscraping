@@ -11,8 +11,8 @@ print_r($response->getHeader('content-type'));
 echo 'before encoding', PHP_EOL;
 print_r(mb_substr(strip_tags($response->getBody()), 0, 200));
 
-list($body) = Diggin_Http_Response_Encoder::encode($response->getBody(),
-                                     $response->getHeader('content-type'));
+$body = Diggin_Http_Response_Encoder::encode($response->getBody(),
+                                     $response->getHeader('content-type'), 'UTF-8');
                                      
 echo PHP_EOL, 'after encoding', PHP_EOL;
 print_r(mb_substr(strip_tags($body), 0, 200));
