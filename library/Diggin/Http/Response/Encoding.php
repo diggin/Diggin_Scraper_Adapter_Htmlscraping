@@ -28,10 +28,10 @@
  * 
  * @category   Diggin
  * @package    Diggin_Http
- * @subpackage Response_Encoder
+ * @subpackage Response_Encoding
  */
 
-class Diggin_Http_Response_Encoder
+class Diggin_Http_Response_Encoding
 {
     /**
      * encoding
@@ -57,13 +57,13 @@ class Diggin_Http_Response_Encoder
             @mb_convert_variables($encodingto, $encodingfrom, $responseBody, $convertVars);
         } else {
             if (false === $responseBody = @iconv($encodingfrom, $encodingto, $responseBody)) {
-                require_once 'Diggin/Http/Response/Encoder/Exception.php';
-                throw new Diggin_Http_Response_Encoder_Exception('Failed converting character encoding.');
+                require_once 'Diggin/Http/Response/Encoding/Exception.php';
+                throw new Diggin_Http_Response_Encoding_Exception('Failed converting character encoding.');
             }
             foreach ($convertVars as $key => $value) {
                 if (false === $convertVars[$key] = @iconv($encodingfrom, $encodingto, $value)) {
-                    require_once 'Diggin/Http/Response/Encoder/Exception.php';
-                    throw new Diggin_Http_Response_Encoder_Exception('Failed converting character encoding.');
+                    require_once 'Diggin/Http/Response/Encoding/Exception.php';
+                    throw new Diggin_Http_Response_Encoding_Exception('Failed converting character encoding.');
                 }
             }
         }
@@ -76,7 +76,7 @@ class Diggin_Http_Response_Encoder
      * @param object $response
      * @return string
      */
-    public static function encodeFromObject($response, $encodingto = 'UTF-8')
+    public static function encodeResponseObject($response, $encodingto = 'UTF-8')
     {
         if ($response instanceof Zend_Http_Response or
             $response instanceof HTTP_Request2_Response) {
@@ -84,8 +84,8 @@ class Diggin_Http_Response_Encoder
                                 $response->getHeader('content-type'),
                                 $encodingto);
         } else {
-            require_once 'Diggin/Http/Response/Encoder/Exception.php';
-            throw new Diggin_Http_Response_Encoder_Exception('Unknown Object Type..');
+            require_once 'Diggin/Http/Response/Encoding/Exception.php';
+            throw new Diggin_Http_Response_Encoding_Exception('Unknown Object Type..');
         }
     }
     
@@ -121,8 +121,8 @@ class Diggin_Http_Response_Encoder
             if (!$encoding) {
                 @mb_detect_order('ASCII, JIS, UTF-8, EUC-JP, SJIS');
                 if (false === $encoding = @mb_preferred_mime_name(@mb_detect_encoding($responseBody))) {
-                    require_once 'Diggin/Http/Response/Encoder/Exception.php';
-                    throw new Diggin_Http_Response_Encoder_Exception('Failed detecting character encoding.');
+                    require_once 'Diggin/Http/Response/Encoding/Exception.php';
+                    throw new Diggin_Http_Response_Encoding_Exception('Failed detecting character encoding.');
                 }
             }
         }
