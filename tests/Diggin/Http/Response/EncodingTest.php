@@ -57,14 +57,29 @@ class Diggin_Http_Response_EncodingTest extends PHPUnit_Framework_TestCase
     }
 
     /**
+     * test "detect" part.1
+     * 
      * @todo Implement testDetect().
      */
-    public function testDetect() {
+    public function testDetectOnlyResponseBody() {
         //
-        $responseBody = pack("C2", 0x87, 0x40);
-        
-        $this->assertEquals('Shift_JIS', $this->object->detect($responseBody));
-//        $this->assertEquals('');
+        $this->assertEquals('Shift_JIS',
+                            $this->object->detect(pack("C2", 0x87, 0x40)));
+
+        //@see http://homepage2.nifty.com/Catra/memo/perl_pack.html
+        $this->assertEquals('EUC-JP',
+                            $this->object->detect(pack("C4", 164, 164, 164, 164)));
+    }
+    
+    /**
+     * test "detect" part.2 
+     * 
+     * @todo Implement testDetect().
+     */
+    public function testDetectWithContentType() {
+        $this->markTestIncomplete(
+          'This test has not been implemented yet.'
+        );
     }
 }
 ?>
