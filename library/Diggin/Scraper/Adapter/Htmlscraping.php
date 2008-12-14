@@ -230,9 +230,9 @@ class Diggin_Scraper_Adapter_Htmlscraping implements Diggin_Scraper_Adapter_Inte
             throw new Diggin_Scraper_Adapter_Exception('The entity body became empty after preprocessing.');
         }
         
-        require_once 'Diggin/Http/Response/Encoder.php';
+        require_once 'Diggin/Http/Response/Encoding.php';
         list($responseBody, $this->backup) = 
-        Diggin_Http_Response_Encoder::encode($responseBody,
+        Diggin_Http_Response_Encoding::encode($responseBody,
                                              $response->getHeader('content-type'),
                                              'UTF-8',
                                              $this->backup);
