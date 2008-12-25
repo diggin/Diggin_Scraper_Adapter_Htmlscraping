@@ -71,7 +71,9 @@ class Diggin_Http_Response_Encoding
     }
     
     /**
-     * encode from response object
+     * encode from response object 
+     * to  $encodingto
+     * return response's Body
      *
      * @param object $response
      * @return string
@@ -113,17 +115,13 @@ class Diggin_Http_Response_Encoding
         }
 
         /*
-         * Use mbstring to convert character encoding if available.
-         * Otherwise use iconv (iconv may try to detect character encoding automatically).
-         * Do not trust the declared encoding and do conversion even if UTF-8.
+         * Use mbstring to detect character encoding if available.
          */
-        if (extension_loaded('mbstring')) {
-            if (!$encoding) {
-                @mb_detect_order('ASCII, JIS, UTF-8, EUC-JP, SJIS');
-                if (false === $encoding = @mb_preferred_mime_name(@mb_detect_encoding($responseBody))) {
-                    require_once 'Diggin/Http/Response/Encoding/Exception.php';
-                    throw new Diggin_Http_Response_Encoding_Exception('Failed detecting character encoding.');
-                }
+        if (extension_loaded('mbstring') and !$encoding) {
+            @mb_detect_order('ASCII, JIS, UTF-8, EUC-JP, SJIS');
+            if (false === $encoding = @mb_preferred_mime_name(@mb_detect_encoding($responseBody))) {
+                require_once 'Diggin/Http/Response/Encoding/Exception.php';
+                throw new Diggin_Http_Response_Encoding_Exception('Failed detecting character encoding.');
             }
         }
         
@@ -131,6 +129,8 @@ class Diggin_Http_Response_Encoding
     }
 
     /**
+     * Get Charset From Ctype
+     * 
      * @param  string  $string
      * @return mixed
      */
