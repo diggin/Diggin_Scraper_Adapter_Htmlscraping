@@ -34,8 +34,9 @@ class Diggin_Scraper_Adapter_Htmlscraping implements Diggin_Scraper_Adapter_Inte
      * Configuration array, set using the constructor or using ::setConfig()
      *
      * @var array
+     * @see http://tidy.sourceforge.net/docs/quickref.html
      */
-    protected $config = array();
+    protected $config = array('tidy' => array('output-xhtml' => true, 'wrap' => 0));
 
     /**
      * @var array
@@ -70,6 +71,7 @@ class Diggin_Scraper_Adapter_Htmlscraping implements Diggin_Scraper_Adapter_Inte
          * when you use SimpleXMLElement->xpath().
          */
         $responseBody = preg_replace('/\sxmlns="[^"]+"/', '', $xhtml);
+        //$responseBody = preg_replace('/\sxmlns=\n?"[^"]+"/', '', $xhtml);
         
         /*
          * Replace every '&' with '&amp;'
@@ -254,7 +256,8 @@ class Diggin_Scraper_Adapter_Htmlscraping implements Diggin_Scraper_Adapter_Inte
             //$responseBody = preg_replace('/>(<+)<\//s', '>$1<', $responseBody);
             $responseBody = str_replace('&', '&amp;', $responseBody);
             $tidy = new tidy;
-            $tidy->parseString($responseBody, array('output-xhtml' => true), 'UTF8');
+            //$tidy->parseString($responseBody, array('output-xhtml' => true), 'UTF8');
+            $tidy->parseString($responseBody, $this->config['tidy'], 'UTF8');
             $tidy->cleanRepair();
             $responseBody = $tidy->html();
             //$responseBody = str_replace('&amp;lt;', '&lt;', $responseBody);
@@ -319,9 +322,15 @@ class Diggin_Scraper_Adapter_Htmlscraping implements Diggin_Scraper_Adapter_Inte
             throw new Diggin_Scraper_Adapter_Exception('Expected array parameter, given ' . gettype($config));
         }
         
-        foreach ($config as $k => $v)
+        if (isset($config['tidy']['output-xhtml']) && $config['tidy']['output-xhtml'] !== true) {
+            require_once 'Diggin/Scraper/Adapter/Exception.php';
+            throw new Diggin_Scraper_Adapter_Exception('tidy-config "output-xhtml" not as true - not allowed');
+        }
+        
+        foreach ($config as $k => $v) {
             $this->config[strtolower($k)] = $v;
-
+        }
+        
         return $this;
     }
 }
