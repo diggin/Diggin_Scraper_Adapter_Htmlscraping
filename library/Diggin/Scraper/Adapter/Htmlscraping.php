@@ -73,14 +73,6 @@ class Diggin_Scraper_Adapter_Htmlscraping implements Diggin_Scraper_Adapter_Inte
         $responseBody = preg_replace('/\sxmlns="[^"]+"/', '', $xhtml);
         //$responseBody = preg_replace('/\sxmlns=\n?"[^"]+"/', '', $xhtml);
         
-        /*
-         * Replace every '&' with '&amp;'
-         * for XML parser not to break on non-predefined entities.
-         * So you may need to replace '&amp;' with '&'
-         * to have the original HTML string from returned SimpleXML object.
-         */
-        // not here! before tidy,i replace!
-        //$responseBody = str_replace('&', '&amp;', $responseBody);
         try {
             //@see http://php.net/libxml.constants
             if (isset($this->config['libxmloptions'])) {
@@ -92,17 +84,34 @@ class Diggin_Scraper_Adapter_Htmlscraping implements Diggin_Scraper_Adapter_Inte
             require_once 'Diggin/Scraper/Adapter/Exception.php';
             throw new Diggin_Scraper_Adapter_Exception($e);
         }
-        
+        // firefoxではbaseタグが複数記述されていた場合は、最後のものを考慮する。
+        // スキーマがよろしくない場合は、その前のものを考慮
+        // httpスキーマではない場合は無視される。
         if ($bases = $xml_object->xpath('//base[@href]')) {
-            require_once 'Diggin/Uri/Http.php';
-            $bases[0]['href'] = Diggin_Uri_Http::getAbsoluteUrl((string) $bases[0]['href'], $this->config['url']);
-        } else {
-            if (!$xml_object->head) {
-                $xml_object->addChild('head');
+            krsort($bases);
+            require_once 'Zend/Uri/Http.php';
+            foreach ($bases as $base) {
+                try {
+                    $uri = Zend_Uri_Http::fromString((string) $base[@href]);
+                    //@todo configのurlを書き換えてよいのか考慮する
+                    //$this->setConfig(array('url' => (string) $uri));
+                } catch (Zend_Uri_Exception $e) {
+                    continue;
+                }
             }
-            $base = $xml_object->head->addChild('base');
-            $base->addAttribute('href', $this->config['url']);
         }
+        //} else {
+            //HTMLScrapingクラスでは、convertPathメソッドのときにBASEのhrefを使う
+            //考えのようだが実装されてない？
+            //DigginではBASEタグは設定されてないときは考慮しない。
+            //if (!$xml_object->head) {
+            //    $xml_object->addChild('head');
+            //}
+            //$base = $xml_object->head->addChild('base');
+            //$base->addAttribute('href', $this->config['url']);
+            //$xml_object->head->addChild('base');
+            //$xml_object->head->addAttribute('href', $this->config['url']);
+        //}
 
         return $xml_object;
     }
@@ -249,19 +258,26 @@ class Diggin_Scraper_Adapter_Htmlscraping implements Diggin_Scraper_Adapter_Inte
          * Otherwise, use HTMLParser class (is slower and consumes much memory).
          */
         
+        /*
+         * Replace every '&' with '&amp;'
+         * for XML parser not to break on non-predefined entities.
+         * So you may need to replace '&amp;' with '&'
+         * to have the original HTML string from returned SimpleXML object.
+         * 
+         * //@see 
+         * And tidy, it will replace htmlspecialchars('>' '<') to ('&lt;, '&gt;'') 
+         * if not as Html Tag for tidy.
+         * so "str_replace('&')" before tidy.
+         */
+        
         if (extension_loaded('tidy')) {
-            //$responseBody = str_replace('><</', '>&lt;</', $responseBody);
-            //$responseBody = str_replace('><<</', '>&lt;&lt;</', $responseBody);
-            //$responseBody = str_replace('><<', '>&lt;<', $responseBody);
-            //$responseBody = preg_replace('/>(<+)<\//s', '>$1<', $responseBody);
             $responseBody = str_replace('&', '&amp;', $responseBody);
             $tidy = new tidy;
-            //$tidy->parseString($responseBody, array('output-xhtml' => true), 'UTF8');
             $tidy->parseString($responseBody, $this->config['tidy'], 'UTF8');
             $tidy->cleanRepair();
             $responseBody = $tidy->html();
-            //$responseBody = str_replace('&amp;lt;', '&lt;', $responseBody);
         } else {
+            //@
             $responseBody = str_replace('&', '&amp;', $responseBody);
             require_once 'HTMLParser.class.php';
             $parser = new HTMLParser;
