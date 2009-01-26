@@ -84,34 +84,6 @@ class Diggin_Scraper_Adapter_Htmlscraping implements Diggin_Scraper_Adapter_Inte
             require_once 'Diggin/Scraper/Adapter/Exception.php';
             throw new Diggin_Scraper_Adapter_Exception($e);
         }
-        // firefoxではbaseタグが複数記述されていた場合は、最後のものを考慮する。
-        // スキーマがよろしくない場合は、その前のものを考慮
-        // httpスキーマではない場合は無視される。
-        if ($bases = $xml_object->xpath('//base[@href]')) {
-            krsort($bases);
-            require_once 'Zend/Uri/Http.php';
-            foreach ($bases as $base) {
-                try {
-                    $uri = Zend_Uri_Http::fromString((string) $base[@href]);
-                    //@todo configのurlを書き換えてよいのか考慮する
-                    //$this->setConfig(array('url' => (string) $uri));
-                } catch (Zend_Uri_Exception $e) {
-                    continue;
-                }
-            }
-        }
-        //} else {
-            //HTMLScrapingクラスでは、convertPathメソッドのときにBASEのhrefを使う
-            //考えのようだが実装されてない？
-            //DigginではBASEタグは設定されてないときは考慮しない。
-            //if (!$xml_object->head) {
-            //    $xml_object->addChild('head');
-            //}
-            //$base = $xml_object->head->addChild('base');
-            //$base->addAttribute('href', $this->config['url']);
-            //$xml_object->head->addChild('base');
-            //$xml_object->head->addAttribute('href', $this->config['url']);
-        //}
 
         return $xml_object;
     }
