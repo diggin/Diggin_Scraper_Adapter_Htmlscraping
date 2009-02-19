@@ -191,5 +191,25 @@ BODY;
         $this->assertEquals('UTF-8',
                             $this->object->detect($bodySJIS, $header));
     }
+
+    /**
+     *
+     *
+     */
+    public function testSetDetectOrder() {
+        $this->assertEquals(Diggin_Http_Response_Encoding::DETECT_ORDER,
+                            Diggin_Http_Response_Encoding::getDetectOrder());
+        
+        $detectOrder = 'SJIS, UTF-8';
+        Diggin_Http_Response_Encoding::setDetectOrder($detectOrder);
+        
+        $this->assertEquals($detectOrder,
+                            Diggin_Http_Response_Encoding::getDetectOrder());
+        
+        Diggin_Http_Response_Encoding::setDetectOrder(false);
+
+        $this->assertEquals(Diggin_Http_Response_Encoding::DETECT_ORDER,
+                            Diggin_Http_Response_Encoding::getDetectOrder());
+    }
 }
 ?>

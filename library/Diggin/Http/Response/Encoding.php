@@ -33,6 +33,33 @@
 
 class Diggin_Http_Response_Encoding
 {
+
+    const DETECT_ORDER = 'ASCII, JIS, UTF-8, EUC-JP, SJIS';
+   
+    private static $_detectOrder = 'ASCII, JIS, UTF-8, EUC-JP, SJIS';
+    
+    /**
+     *
+     */
+    public static function setDetectOrder($order)
+    {
+        if ($order === false) {
+            self::$_detectOrder = self::DETECT_ORDER;
+        } else {
+            self::$_detectOrder = $order;
+        }
+    }
+
+    /**
+     * Get detecting order
+     *
+     * @return string
+     */
+    public static function getDetectOrder()
+    {
+        return self::$_detectOrder;
+    }
+
     /**
      * encoding
      * 
@@ -118,7 +145,7 @@ class Diggin_Http_Response_Encoding
          * Use mbstring to detect character encoding if available.
          */
         if (extension_loaded('mbstring') and !$encoding) {
-            @mb_detect_order('ASCII, JIS, UTF-8, EUC-JP, SJIS');
+            @mb_detect_order(self::getDetectOrder());
             if (false === $encoding = @mb_preferred_mime_name(@mb_detect_encoding($responseBody))) {
                 require_once 'Diggin/Http/Response/Encoding/Exception.php';
                 throw new Diggin_Http_Response_Encoding_Exception('Failed detecting character encoding.');

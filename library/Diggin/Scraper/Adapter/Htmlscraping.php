@@ -27,8 +27,13 @@
  * @see Diggin_Scraper_Adapter_Interface
  */
 require_once 'Diggin/Scraper/Adapter/Interface.php';
+/**
+ * @see Diggin_Scraper_Adapter_SimplexmlInterface
+ */
+require_once 'Diggin/Scraper/Adapter/SimplexmlInterface.php';
 
-class Diggin_Scraper_Adapter_Htmlscraping implements Diggin_Scraper_Adapter_Interface 
+class Diggin_Scraper_Adapter_Htmlscraping
+    implements Diggin_Scraper_Adapter_Interface, Diggin_Scraper_Adapter_SimplexmlInterface
 {
     /**
      * Configuration array, set using the constructor or using ::setConfig()
@@ -320,5 +325,10 @@ class Diggin_Scraper_Adapter_Htmlscraping implements Diggin_Scraper_Adapter_Inte
         }
         
         return $this;
+    }
+    
+    public function getConfig($key)
+    {
+        return $this->config[strtolower($key)];
     }
 }
