@@ -24,16 +24,11 @@
  */
 
 /**
- * @see Diggin_Scraper_Adapter_Interface
+ * @see Diggin_Scraper_Adapter_SimplexmlAbstract
  */
-require_once 'Diggin/Scraper/Adapter/Interface.php';
-/**
- * @see Diggin_Scraper_Adapter_SimplexmlInterface
- */
-require_once 'Diggin/Scraper/Adapter/SimplexmlInterface.php';
+require_once 'Diggin/Scraper/Adapter/SimplexmlAbstract.php';
 
-class Diggin_Scraper_Adapter_Htmlscraping
-    implements Diggin_Scraper_Adapter_Interface, Diggin_Scraper_Adapter_SimplexmlInterface
+class Diggin_Scraper_Adapter_Htmlscraping extends Diggin_Scraper_Adapter_SimplexmlAbstract
 {
     /**
      * Configuration array, set using the constructor or using ::setConfig()
@@ -59,7 +54,7 @@ class Diggin_Scraper_Adapter_Htmlscraping
      * @param Zend_Http_Response $response
      * @return SimpleXMLElement
      */
-    final public function getXmlObject($response)
+    public function getSimplexml($response)
     {
         try {
             $xhtml = $this->getXhtml($response);
@@ -291,16 +286,7 @@ class Diggin_Scraper_Adapter_Htmlscraping
         return $replace;
     }
     
-    /**
-     * Reading Response as SimpleXmlElement
-     * 
-     * @return SimplXmlElement
-     */
-    public function readData($response)
-    {
-        return $this->getXmlObject($response);
-    }
-    
+
     /**
      * Set configuration parameters for this
      *
@@ -325,10 +311,5 @@ class Diggin_Scraper_Adapter_Htmlscraping
         }
         
         return $this;
-    }
-    
-    public function getConfig($key)
-    {
-        return $this->config[strtolower($key)];
     }
 }
