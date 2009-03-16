@@ -70,9 +70,15 @@ class Diggin_Scraper_Adapter_Htmlscraping extends Diggin_Scraper_Adapter_Simplex
          * So you do not need to use SimpleXMLElement->registerXPathNamespace()
          * when you use SimpleXMLElement->xpath().
          */
-        $responseBody = preg_replace('/\sxmlns="[^"]+"/', '', $xhtml);
+        //$responseBody = preg_replace('/\sxmlns="[^"]+"/', '', $xhtml);
         //$responseBody = preg_replace('/\sxmlns=\n?"[^"]+"/', '', $xhtml);
+
+        $htmldoc = '<?xml version="1.0" encoding="UTF-8"?>'.
+                   '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 '.
+                   'Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">';
         
+        $responseBody = preg_replace('/<\?xml.*<head>/s', $htmldoc.'<html><head>', $xhtml);
+
         try {
             //@see http://php.net/libxml.constants
             if (isset($this->config['libxmloptions'])) {
