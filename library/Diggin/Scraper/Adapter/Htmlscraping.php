@@ -71,13 +71,10 @@ class Diggin_Scraper_Adapter_Htmlscraping extends Diggin_Scraper_Adapter_Simplex
          * when you use SimpleXMLElement->xpath().
          */
 
-        $htmldoc = '<?xml version="1.0" encoding="UTF-8"?>'.
-                   '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 '.
-                   'Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">';
+        //'/\sxmlns:[:alnum:]="[^"]+"/'
+        //$responseBody = preg_replace('/\sxmlns="[^"]+"/', '', $xhtml);
+        $responseBody = preg_replace(array('/\sxmlns(:[A-Za-z])*?="[^"]+"/', "/\sxmlns(:[A-Za-z])*?='[^']+'/"), '', $xhtml);
 
-        //all header's xml replace
-        $responseBody = preg_replace('/<\?xml.*<head>/s', $htmldoc.'<html><head>', $xhtml);
-        $responseBody = preg_replace('/\sxmlns="[^"]+"/', '', $responseBody);
         
         try {
             //@see http://php.net/libxml.constants
