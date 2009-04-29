@@ -145,11 +145,14 @@ class Diggin_Http_Response_Encoding
          * Use mbstring to detect character encoding if available.
          */
         if (extension_loaded('mbstring') and !$encoding) {
+            $detectOrder = @mb_detect_order();
             @mb_detect_order(self::getDetectOrder());
             if (false === $encoding = @mb_preferred_mime_name(@mb_detect_encoding($responseBody))) {
+                @mb_detect_order($detectOrder);//restore
                 require_once 'Diggin/Http/Response/Encoding/Exception.php';
                 throw new Diggin_Http_Response_Encoding_Exception('Failed detecting character encoding.');
             }
+            @mb_detect_order($detectOrder);//restore
         }
         
         return $encoding;

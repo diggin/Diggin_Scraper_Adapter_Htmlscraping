@@ -18,6 +18,8 @@ class Diggin_Http_Response_EncodingTest extends PHPUnit_Framework_TestCase
     protected $object;
 
     protected $responseHeaderUTF8;
+
+    private $detectOrder;
     /**
      * Sets up the fixture, for example, opens a network connection.
      * This method is called before a test is executed.
@@ -26,6 +28,9 @@ class Diggin_Http_Response_EncodingTest extends PHPUnit_Framework_TestCase
      */
     protected function setUp()
     {
+
+        $this->detectOrder = mb_detect_order();
+
         $this->object = new Diggin_Http_Response_Encoding;
         $this->responseHeaderUTF8 =
            "HTTP/1.1 200 OK"        ."\r\n".
@@ -46,6 +51,7 @@ class Diggin_Http_Response_EncodingTest extends PHPUnit_Framework_TestCase
      */
     protected function tearDown()
     {
+        mb_detect_order($this->detectOrder);
     }
 
     /**
@@ -192,11 +198,41 @@ BODY;
                             $this->object->detect($bodySJIS, $header));
     }
 
+    
+    public function testDetect_Restore() {
+
+        $iniDetectOrder = mb_detect_order();
+
+        $testerDetectOrder = mb_detect_order('UTF-8, SJIS');
+
+$body = <<<BODY
+    <html xmlns="http://www.w3.org/1999/xhtml">
+    <head>
+    <META HTTP-EQUIV="Content-Type" CONTENT="text/html;CHARSET=Shift_JIS">
+        <title>test</title>
+            </head>
+            <body>
+            </body>
+BODY;
+        $this->object->setDetectOrder('ASCII, SJIS');
+        $this->object->detect($body); //run mb_detect
+        $this->object->setDetectOrder(Diggin_Http_Response_Encoding::DETECT_ORDER); //restore object's order
+
+        //restore ok ?
+        $this->assertEquals(array('UTF-8', 'SJIS'), mb_detect_order());
+
+        //restore
+        mb_detect_order($iniDetectOrder);
+    }
+
+
     /**
      *
      *
      */
     public function testSetDetectOrder() {
+
+        //
         $this->assertEquals(Diggin_Http_Response_Encoding::DETECT_ORDER,
                             Diggin_Http_Response_Encoding::getDetectOrder());
         
@@ -205,11 +241,13 @@ BODY;
         
         $this->assertEquals($detectOrder,
                             Diggin_Http_Response_Encoding::getDetectOrder());
-        
+
+
         Diggin_Http_Response_Encoding::setDetectOrder(false);
 
         $this->assertEquals(Diggin_Http_Response_Encoding::DETECT_ORDER,
                             Diggin_Http_Response_Encoding::getDetectOrder());
+
     }
 }
 ?>
