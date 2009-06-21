@@ -36,7 +36,10 @@ class Diggin_Scraper_Adapter_Htmlscraping extends Diggin_Scraper_Adapter_Simplex
      * @var array
      * @see http://tidy.sourceforge.net/docs/quickref.html
      */
-    protected $config = array('tidy' => array('output-xhtml' => true, 'wrap' => 0));
+    protected $config = array(
+                'tidy' => array('output-xhtml' => true, 'wrap' => 0),
+                'pre_ampersand_escape' => false
+              );
 
     /**
      * @var array
@@ -245,13 +248,17 @@ class Diggin_Scraper_Adapter_Htmlscraping extends Diggin_Scraper_Adapter_Simplex
          */
         
         if (extension_loaded('tidy')) {
-            $responseBody = str_replace('&', '&amp;', $responseBody);
+            if ($this->config['pre_ampersand_escape']) {
+                $responseBody = str_replace('&', '&amp;', $responseBody);
+            }
             $tidy = new tidy;
             $tidy->parseString($responseBody, $this->config['tidy'], 'UTF8');
             $tidy->cleanRepair();
             $responseBody = $tidy->html();
         } else {
-            //@
+            if ($this->config['pre_ampersand_escape']) {
+                $responseBody = str_replace('&', '&amp;', $responseBody);
+            }
             $responseBody = str_replace('&', '&amp;', $responseBody);
             require_once 'HTMLParser.class.php';
             $parser = new HTMLParser;
