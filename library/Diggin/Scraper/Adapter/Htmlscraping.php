@@ -23,9 +23,7 @@
  * ---------------------------------------------------------------------
  */
 
-/**
- * @see Diggin_Scraper_Adapter_SimplexmlAbstract
- */
+/** Diggin_Scraper_Adapter_SimplexmlAbstract */
 require_once 'Diggin/Scraper/Adapter/SimplexmlAbstract.php';
 
 class Diggin_Scraper_Adapter_Htmlscraping extends Diggin_Scraper_Adapter_SimplexmlAbstract
@@ -73,17 +71,19 @@ class Diggin_Scraper_Adapter_Htmlscraping extends Diggin_Scraper_Adapter_Simplex
          * So you do not need to use SimpleXMLElement->registerXPathNamespace()
          * when you use SimpleXMLElement->xpath().
          */
-        //originail
+        //origin is
         //$responseBody = preg_replace('/\sxmlns="[^"]+"/', '', $xhtml);
         
         $responseBody = preg_replace(array('/\sxmlns:?[A-Za-z]*="[^"]+"/', "/\sxmlns:?[A-Za-z]*='[^']+'/"), '', $xhtml);
 
         try {
+            /** Diggin_Scraper_Wrapper_SimpleXMLElement */
+            require_once 'Diggin/Scraper/Wrapper/SimpleXMLElement.php';
             //@see http://php.net/libxml.constants
             if (isset($this->config['libxmloptions'])) {
-                $xml_object = @new SimpleXMLElement($responseBody, $this->config['libxmloptions']);
+                $xml_object = @new Diggin_Scraper_Wrapper_SimpleXMLElement($responseBody, $this->config['libxmloptions']);
             } else {
-                $xml_object = @new SimpleXMLElement($responseBody);
+                $xml_object = @new Diggin_Scraper_Wrapper_SimpleXMLElement($responseBody);
             }
         } catch (Exception $e) {
             require_once 'Diggin/Scraper/Adapter/Exception.php';
@@ -91,17 +91,6 @@ class Diggin_Scraper_Adapter_Htmlscraping extends Diggin_Scraper_Adapter_Simplex
         }
 
         return $xml_object;
-    }
-
-    /**
-     * Return XHTML string based on SimpleXML element.
-     *
-     * @param  object  $element
-     * @return string
-     */
-    final public function dumpElement($element)
-    {
-        return str_replace('&amp;', '&', $element->asXML());
     }
 
     /**
@@ -138,24 +127,6 @@ class Diggin_Scraper_Adapter_Htmlscraping extends Diggin_Scraper_Adapter_Simplex
         $tags = array('script', 'style');
         foreach ($tags as $tag) {
             $responseBody = preg_replace("/<$tag\b[^>]*?>.*?<\/$tag\b[^>]*?>/si", '' , $responseBody);
-            /*
-            $responseBody = preg_replace_callback(
-                "/(<$tag\b[^>]*?>)(.*?)(<\/$tag\b[^>]*?>)/si",
-                create_function('$matches', '
-                    $content = trim($matches[2]);
-                    if (empty($content)
-                        or preg_match("/^<!\[CDATA\[.*?\]\]>$/s", $content)) {
-                        return $matches[0];
-                    } else {
-                        $content = preg_replace("/^<!-+/", "", $content);
-                        $content = preg_replace("/-+>$/", "", $content);
-                        $content = preg_replace("/\s*\/\/$/s", "", trim($content));
-                        return "$matches[1]<![CDATA[\n$content\n]]>$matches[3]";
-                    }
-                '),
-                $responseBody
-            );
-            */
         }
         /*
          * Backup CDATA sections for later process.
@@ -218,18 +189,20 @@ class Diggin_Scraper_Adapter_Htmlscraping extends Diggin_Scraper_Adapter_Simplex
             throw new Diggin_Scraper_Adapter_Exception('The entity body became empty after preprocessing.');
         }
         
-        require_once 'Diggin/Http/Response/Encoding.php';
-        list($responseBody, $this->backup) = 
-        Diggin_Http_Response_Encoding::encode($responseBody,
-                                             $response->getHeader('content-type'),
-                                             'UTF-8',
-                                             $this->backup);
+        require_once 'Diggin/Http/Response/CharactorEncoding.php';
+        
+        $detect = Diggin_Http_Response_CharactorEncoding::detect($responseBody, $response->getHeader('content-type'));
+
+        $responseBody = Diggin_Http_Response_CharactorEncoding::mbconvert($responseBody, $detect, 'UTF-8');
+        $this->backup = Diggin_Http_Response_CharactorEncoding::mbconvert($this->backup, $detect, 'UTF-8');
+
         /*
          * Restore CDATAs and comments.
          */
         for ($i = 0; $i < $this->backup_count; $i++) {
             $responseBody = str_replace("<restore count=\"$i\" />", $this->backup[$i], $responseBody);
         }
+
         /*
          * Use Tidy to format HTML if available.
          * Otherwise, use HTMLParser class (is slower and consumes much memory).
@@ -244,14 +217,14 @@ class Diggin_Scraper_Adapter_Htmlscraping extends Diggin_Scraper_Adapter_Simplex
          * //@see 
          * And tidy, it will replace htmlspecialchars('>' '<') to ('&lt;, '&gt;'') 
          * if not as Html Tag for tidy.
-         * so "str_replace('&')" before tidy.
+         * so, "str_replace('&')" before tidy.
          */
         
         if (extension_loaded('tidy')) {
             if ($this->config['pre_ampersand_escape']) {
                 $responseBody = str_replace('&', '&amp;', $responseBody);
             }
-            $tidy = new tidy;
+            $tidy = new tidy();
             $tidy->parseString($responseBody, $this->config['tidy'], 'UTF8');
             $tidy->cleanRepair();
             $responseBody = $tidy->html();
