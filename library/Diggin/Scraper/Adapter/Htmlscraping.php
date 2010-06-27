@@ -36,8 +36,14 @@ class Diggin_Scraper_Adapter_Htmlscraping extends Diggin_Scraper_Adapter_Simplex
      */
     protected $config = array(
                 'tidy' => array('output-xhtml' => true, 'wrap' => 0),
-                'pre_ampersand_escape' => false
+                'pre_ampersand_escape' => false,
+                'url' => null
               );
+
+    /**
+     * @var Diggin_Http_Response_Charset_Front_EncodeInterface
+     */
+    private $_charsetFront;
 
     /**
      * @var array
@@ -77,13 +83,13 @@ class Diggin_Scraper_Adapter_Htmlscraping extends Diggin_Scraper_Adapter_Simplex
         $responseBody = preg_replace(array('/\sxmlns:?[A-Za-z]*="[^"]+"/', "/\sxmlns:?[A-Za-z]*='[^']+'/"), '', $xhtml);
 
         try {
-            /** Diggin_Scraper_Wrapper_SimpleXMLElement */
-            require_once 'Diggin/Scraper/Wrapper/SimpleXMLElement.php';
+            /** Diggin_Scraper_Adapter_Wrapper_SimpleXMLElement */
+            require_once 'Diggin/Scraper/Adapter/Wrapper/SimpleXMLElement.php';
             //@see http://php.net/libxml.constants
             if (isset($this->config['libxmloptions'])) {
-                $xml_object = @new Diggin_Scraper_Wrapper_SimpleXMLElement($responseBody, $this->config['libxmloptions']);
+                $xml_object = @new Diggin_Scraper_Adapter_Wrapper_SimpleXMLElement($responseBody, $this->config['libxmloptions']);
             } else {
-                $xml_object = @new Diggin_Scraper_Wrapper_SimpleXMLElement($responseBody);
+                $xml_object = @new Diggin_Scraper_Adapter_Wrapper_SimpleXMLElement($responseBody);
             }
         } catch (Exception $e) {
             require_once 'Diggin/Scraper/Adapter/Exception.php';
@@ -189,12 +195,10 @@ class Diggin_Scraper_Adapter_Htmlscraping extends Diggin_Scraper_Adapter_Simplex
             throw new Diggin_Scraper_Adapter_Exception('The entity body became empty after preprocessing.');
         }
         
-        require_once 'Diggin/Http/Response/CharactorEncoding.php';
-        
-        $detect = Diggin_Http_Response_CharactorEncoding::detect($responseBody, $response->getHeader('content-type'));
-
-        $responseBody = Diggin_Http_Response_CharactorEncoding::mbconvert($responseBody, $detect, 'UTF-8');
-        $this->backup = Diggin_Http_Response_CharactorEncoding::mbconvert($this->backup, $detect, 'UTF-8');
+        // convert to UTF-8
+        $document = array('url' => $this->config['url'], 
+                          'content' => array('body' => $responseBody, $response->getHeader('content-type')));
+        list($responseBody, $this->backup) = $this->getCharsetFront()->encode($document, $this->backup);
 
         /*
          * Restore CDATAs and comments.
@@ -294,4 +298,20 @@ class Diggin_Scraper_Adapter_Htmlscraping extends Diggin_Scraper_Adapter_Simplex
         
         return $this;
     }
+
+    public function setCharsetFront(Diggin_Http_Response_Charset_Front_EncodeInterface $charseFront)
+    {
+        $this->_charsetFront = $charsetFront;
+    }
+
+    public function getCharsetFront()
+    {
+        if (!$this->_charsetFront) {
+            require_once 'Diggin/Http/Response/Charset/Front/UrlRegex.php';
+            $this->_charsetFront = new Diggin_Http_Response_Charset_Front_UrlRegex;
+        }
+
+        return $this->_charsetFront;
+    }
+
 }
