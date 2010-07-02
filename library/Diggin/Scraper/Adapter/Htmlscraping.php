@@ -197,8 +197,8 @@ class Diggin_Scraper_Adapter_Htmlscraping extends Diggin_Scraper_Adapter_Simplex
         
         // convert to UTF-8
         $document = array('url' => $this->config['url'], 
-                          'content' => array('body' => $responseBody, $response->getHeader('content-type')));
-        list($responseBody, $this->backup) = $this->getCharsetFront()->encode($document, $this->backup);
+                          'content' => array('body' => $responseBody, 'content-type' => $response->getHeader('content-type')));
+        list($responseBody, $this->backup) = $this->getCharsetFront()->convert($document, $this->backup);
 
         /*
          * Restore CDATAs and comments.
