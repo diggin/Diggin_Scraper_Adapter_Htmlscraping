@@ -35,7 +35,9 @@ class Diggin_Scraper_Adapter_Htmlscraping extends Diggin_Scraper_Adapter_Simplex
      * @see http://tidy.sourceforge.net/docs/quickref.html
      */
     protected $config = array(
-                'tidy' => array('output-xhtml' => true, 'wrap' => 0),
+                'tidy' => array('output-xhtml' => true, 
+                                'wrap' => 0,
+                                /*'wrap-script-literals' => true*/),
                 'pre_ampersand_escape' => false,
                 'url' => null
               );
@@ -114,11 +116,11 @@ class Diggin_Scraper_Adapter_Htmlscraping extends Diggin_Scraper_Adapter_Simplex
      */
     final public function getXhtml($response)
     {
-        /*
-         * Remove BOM and NULLs.
-         */
-        $responseBody = preg_replace('/^\xef\xbb\xbf/', '' , $response->getBody());
-        $responseBody = str_replace("\x0", '', $responseBody);
+        // convert to UTF-8
+        $document = array('url' => $this->config['url'], 
+                          'content' => array('body' => $response->getBody(), 'content-type' => $response->getHeader('content-type')));
+        list($responseBody, $this->backup) = $this->getCharsetFront()->convert($document, $this->backup);
+
         /*
          * Initialize the backups.
          */
@@ -194,11 +196,6 @@ class Diggin_Scraper_Adapter_Htmlscraping extends Diggin_Scraper_Adapter_Simplex
             require_once 'Diggin/Scraper/Adapter/Exception.php';
             throw new Diggin_Scraper_Adapter_Exception('The entity body became empty after preprocessing.');
         }
-        
-        // convert to UTF-8
-        $document = array('url' => $this->config['url'], 
-                          'content' => array('body' => $responseBody, 'content-type' => $response->getHeader('content-type')));
-        list($responseBody, $this->backup) = $this->getCharsetFront()->convert($document, $this->backup);
 
         /*
          * Restore CDATAs and comments.
