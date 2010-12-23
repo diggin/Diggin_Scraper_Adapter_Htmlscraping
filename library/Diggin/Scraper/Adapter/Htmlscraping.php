@@ -66,6 +66,7 @@ class Diggin_Scraper_Adapter_Htmlscraping extends Diggin_Scraper_Adapter_Simplex
     public function getSimplexml($response)
     {
         try {
+            $this->setConfig(array('pre_ampersand_escape' => true));
             $xhtml = $this->getXhtml($response);
         } catch (Exception $e) {
             require_once 'Diggin/Scraper/Adapter/Exception.php';
@@ -233,6 +234,7 @@ class Diggin_Scraper_Adapter_Htmlscraping extends Diggin_Scraper_Adapter_Simplex
             if ($this->config['pre_ampersand_escape']) {
                 $responseBody = str_replace('&', '&amp;', $responseBody);
             }
+            //?
             $responseBody = str_replace('&', '&amp;', $responseBody);
             require_once 'HTMLParser.class.php';
             $parser = new HTMLParser;

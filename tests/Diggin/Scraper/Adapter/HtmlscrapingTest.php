@@ -1,5 +1,5 @@
 <?php
-require_once 'PHPUnit/Framework.php';
+require_once 'PHPUnit/Framework/TestCase.php';
 
 require_once 'Diggin/Scraper/Adapter/Htmlscraping.php';
 
@@ -68,21 +68,10 @@ class Diggin_Scraper_Adapter_HtmlscrapingTest extends PHPUnit_Framework_TestCase
           'This test has not been implemented yet.'
         );
     }
- 
-    /**
-     * decpricate method
-     * 
-     * @todo Implement testDumpElement().
-     */
-    public function testDumpElement() {
-        
-        $sxml = simplexml_load_string('<a>aaa&amp;bbb</a>');
-        $this->assertEquals($this->object->dumpElement($sxml), '<?xml version="1.0"?>'."\n".'<a>aaa&bbb</a>'."\n");
-    }
 
-    public function testGetXhtml() {
-        
-        
+    public function testGetXhtml()
+    {
+
         //$this->object->getXhtml($response);
         // Remove the following lines when you implement this test.
         $this->markTestIncomplete(
@@ -90,22 +79,33 @@ class Diggin_Scraper_Adapter_HtmlscrapingTest extends PHPUnit_Framework_TestCase
         );
     }
 
+    public function testNosetConfigAmpasandEscape()
+    {
+    
+        $asxml = $this->object->getSimplexml($this->response)->asXML();
+        $asx = explode('test', $asxml);
+        $this->assertEquals('&amp;', $asx[1]);
+    }
+
     public function testAmpasandEscape()
     {
-    	$this->object->setConfig(array('url' => 'http://test.org/',
-    	                               'pre_ampersand_escape' => true));
-    	$asxml = $this->object->getSimplexml($this->response)->asXML();
+        $this->object->setConfig(array('url' => 'http://test.org/',
+                                       'pre_ampersand_escape' => true));
+        $xhtml = $this->object->getXhtml($this->response);
+        $xh = explode('test', $xhtml);
+        $this->assertEquals('&amp;amp;', $xh[1]);
+
+        $asxml = $this->object->getSimplexml($this->response)->asXML();
         $asx = explode('test', $asxml);
-        
-        $this->assertEquals('&amp;amp;', $asx[1]);
+        $this->assertEquals('&amp;', $asx[1]);
         
         
         $this->object->setConfig(array('url' => 'http://test.org/',
                                        'pre_ampersand_escape' => false));
-        $asxml = $this->object->getSimplexml($this->response)->asXML();
-        $asx = explode('test', $asxml);
+        $xhtml = $this->object->getXhtml($this->response);
+        $xh2 = explode('test', $xhtml);
         
-        $this->assertEquals('&amp;', $asx[1]);
+        $this->assertEquals('&amp;', $xh2[1]);
     }
     
     /**
@@ -125,12 +125,15 @@ class Diggin_Scraper_Adapter_HtmlscrapingTest extends PHPUnit_Framework_TestCase
     public function testSetConfig() {
         $obj = new Diggin_Scraper_Adapter_Htmlscraping();
         
-        $obj->setConfig(array('url' => 'http://test.org/'));
+        $obj->setConfig(array('url' => 'http://example.com/'));
         
         $this->assertAttributeEquals(
-        array('url' => 'http://test.org/', 
-              'tidy' => array('output-xhtml' => true, 'wrap' => 0),
-              'pre_ampersand_escape' => false),
+                array('tidy' => array('output-xhtml' => true,
+                                'wrap' => 0,
+                                /**'wrap-script-literals' => true*/),
+                'pre_ampersand_escape' => false,
+                'url' => 'http://example.com/'),
+
          'config', $obj); 
     }
     
@@ -141,4 +144,3 @@ class Diggin_Scraper_Adapter_HtmlscrapingTest extends PHPUnit_Framework_TestCase
         $this->getExpectedException($obj->setConfig(false));
     }
 }
-?>
