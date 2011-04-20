@@ -3,6 +3,10 @@
  * This class is remodeling of HTMLScraping
  * 
  * @see http://www.rcdtokyo.com/etc/htmlscraping/
+ *
+ * This class require 
+ *  tidy-extension(recommended) or
+ *  HTMLParser class(http://www.rcdtokyo.com/ucb/contents/i000799.php) 
  */
 
 /**
@@ -56,6 +60,8 @@ class Diggin_Scraper_Adapter_Htmlscraping extends Diggin_Scraper_Adapter_Simplex
      * @var integer
      */
     private $backup_count = 0;
+
+    private $_xhtmltransitionalDtd;
     
     /**
      * Casts a SimpleXMLElement
@@ -234,12 +240,14 @@ class Diggin_Scraper_Adapter_Htmlscraping extends Diggin_Scraper_Adapter_Simplex
             if ($this->config['pre_ampersand_escape']) {
                 $responseBody = str_replace('&', '&amp;', $responseBody);
             }
-            //?
-            $responseBody = str_replace('&', '&amp;', $responseBody);
-            require_once 'HTMLParser.class.php';
+
+            // use autoload if available
+            if (!class_exists('HTMLParser')) {
+                require_once 'Diggin/Scraper/Adapter/HtmlscrapingEnvironmentException.php';
+                throw new Diggin_Scraper_Adapter_HtmlscrapingEnvironmentException('require tidy or HTMLParser class');
+            }
             $parser = new HTMLParser;
-            $format_rule = require 'xhtml1-transitional_dtd.inc.php';
-            $parser->setRule($format_rule);
+            $parser->setRule($this->loadXhtmlTransitionalDtd());
             $parser->setRoot('html', array('xmlns' => 'http://www.w3.org/1999/xhtml'));
             $parser->setGenericParent('body');
             $parser->parse($responseBody);
@@ -254,6 +262,21 @@ class Diggin_Scraper_Adapter_Htmlscraping extends Diggin_Scraper_Adapter_Simplex
         $declarations .= '"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">';
         
         return "$declarations$responseBody";
+    }
+    
+    /**
+     * lazy load xhtml Transitional
+     * 
+     * avoid memory leak
+     * @see http://amaxi.sitemix.jp/blog/archives/205
+     */
+    public function loadXhtmlTransitionalDtd()
+    {
+        if (!$this->_xhtmltransitionalDtd) {
+            $this->_xhtmltransitionalDtd = require 'xhtml1-transitional_dtd.inc.php';
+        }
+        
+        return $this->_xhtmltransitionalDtd;
     }
 
     /**
