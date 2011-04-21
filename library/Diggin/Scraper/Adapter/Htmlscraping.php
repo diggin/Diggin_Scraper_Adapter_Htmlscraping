@@ -74,9 +74,11 @@ class Diggin_Scraper_Adapter_Htmlscraping extends Diggin_Scraper_Adapter_Simplex
         try {
             $this->setConfig(array('pre_ampersand_escape' => true));
             $xhtml = $this->getXhtml($response);
+        } catch (Diggin_Scraper_Adapter_Exception $dsae) {
+            throw $dsae;
         } catch (Exception $e) {
             require_once 'Diggin/Scraper/Adapter/Exception.php';
-            throw new Diggin_Scraper_Adapter_Exception($e);
+            throw new Diggin_Scraper_Adapter_Exception('Unexpected Exception Occured', 0, $e);
         }
         
         /*
@@ -100,9 +102,11 @@ class Diggin_Scraper_Adapter_Htmlscraping extends Diggin_Scraper_Adapter_Simplex
             } else {
                 $xml_object = @new Diggin_Scraper_Adapter_Wrapper_SimpleXMLElement($responseBody);
             }
+        } catch (Diggin_Scraper_Adapter_Exception $dsae) {
+            throw $dsae;
         } catch (Exception $e) {
             require_once 'Diggin/Scraper/Adapter/Exception.php';
-            throw new Diggin_Scraper_Adapter_Exception($e);
+            throw new Diggin_Scraper_Adapter_Exception('Unexpected Exception Occured', 0, $e);
         }
 
         return $xml_object;

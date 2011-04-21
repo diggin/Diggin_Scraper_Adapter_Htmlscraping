@@ -52,7 +52,8 @@ class Diggin_Scraper_Adapter_HtmlscrapingTest extends PHPUnit_Framework_TestCase
     }
 
     protected function tearDown()
-    {}
+    {
+    }
 
     public function environmentCheck()
     {
@@ -60,7 +61,8 @@ class Diggin_Scraper_Adapter_HtmlscrapingTest extends PHPUnit_Framework_TestCase
             $this->assertInternalType('string', $this->object->getXhtml($this->response));
         } else {
             try {
-                $this->object->getXhtml($this->response);
+                //$this->object->getXhtml($this->response);
+                $this->object->getSimplexml($this->response);
                 $this->fail('IF tidy is not available, should raise Exception ');
             } catch (Diggin_Scraper_Adapter_HtmlscrapingEnvironmentException $e) {
                 $vendor2 = dirname(dirname(dirname(__DIR__))).'/vendor2';
