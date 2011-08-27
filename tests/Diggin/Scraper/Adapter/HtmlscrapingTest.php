@@ -1,12 +1,13 @@
 <?php
-require_once 'PHPUnit/Framework/TestCase.php';
-require_once 'Diggin/Scraper/Adapter/Htmlscraping.php';
-require_once 'Zend/Http/Response.php';
+
+namespace DigginTest\Scraper\Adapter;
+use Diggin\Scraper\Adapter\Htmlscraping,
+    Zend\Http\Response;
 
 /**
  * Test class for Diggin_Scraper_Adapter_Htmlscraping.
  */
-class Diggin_Scraper_Adapter_HtmlscrapingTest extends PHPUnit_Framework_TestCase
+class HtmlscrapingTest extends \PHPUnit_Framework_TestCase
 {
     /**
      * @var    Diggin_Scraper_Adapter_Htmlscraping
@@ -24,7 +25,7 @@ class Diggin_Scraper_Adapter_HtmlscrapingTest extends PHPUnit_Framework_TestCase
      */
     protected function setUp()
     {
-        $this->object = new Diggin_Scraper_Adapter_Htmlscraping;
+        $this->object = new Htmlscraping;
         
         
         $responseHeader =            "HTTP/1.1 200 OK"        ."\r\n".
@@ -43,16 +44,12 @@ class Diggin_Scraper_Adapter_HtmlscrapingTest extends PHPUnit_Framework_TestCase
                            '</html>';
         $response_str = "$responseHeader\r\n\r\n$responseBody";
         
-        $this->response = Zend_Http_Response::fromString($response_str);
+        $this->response = Response::fromString($response_str);
 
         if (!self::$environmentCheck) {
             $this->environmentCheck();
             self::$environmentCheck = true;
         }
-    }
-
-    protected function tearDown()
-    {
     }
 
     public function environmentCheck()
@@ -72,7 +69,6 @@ class Diggin_Scraper_Adapter_HtmlscrapingTest extends PHPUnit_Framework_TestCase
             }
         }
     }
-
 
     public function testGetXmlObject() 
     {
@@ -130,7 +126,7 @@ class Diggin_Scraper_Adapter_HtmlscrapingTest extends PHPUnit_Framework_TestCase
      * testSetConfig().
      */
     public function testSetConfig() {
-        $obj = new Diggin_Scraper_Adapter_Htmlscraping();
+        $obj = new Htmlscraping();
         
         $obj->setConfig(array('url' => 'http://example.com/'));
         
@@ -145,7 +141,7 @@ class Diggin_Scraper_Adapter_HtmlscrapingTest extends PHPUnit_Framework_TestCase
     }
     
     public function testSetConfigThrowException() {
-        $obj = new Diggin_Scraper_Adapter_Htmlscraping();
+        $obj = new Htmlscraping();
         
         $this->setExpectedException('Diggin_Scraper_Adapter_Exception');
         $this->getExpectedException($obj->setConfig(false));
