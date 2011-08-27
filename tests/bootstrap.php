@@ -23,5 +23,5 @@ $loader = new SplClassLoader('Zend\\Loader', $vendor);
 $loader->register();
 
 require_once $src.'Diggin/Scraper/Adapter/Htmlscraping.php';
-//require_once $src.'Diggin/Scraper/Adapter/HtmlscrapingEnvironmentException.php';
+require_once $src.'Diggin/Scraper/Adapter/Exception/HtmlscrapingEnvironmentException.php';
 
