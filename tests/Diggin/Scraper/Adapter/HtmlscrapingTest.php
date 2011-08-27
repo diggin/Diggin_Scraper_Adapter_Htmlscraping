@@ -61,7 +61,7 @@ class HtmlscrapingTest extends \PHPUnit_Framework_TestCase
                 //$this->object->getXhtml($this->response);
                 $this->object->getSimplexml($this->response);
                 $this->fail('IF tidy is not available, should raise Exception ');
-            } catch (Diggin_Scraper_Adapter_HtmlscrapingEnvironmentException $e) {
+            } catch (\Diggin\Scraper\Adapter\HtmlscrapingEnvironmentException $e) {
                 $vendor2 = dirname(dirname(dirname(__DIR__))).'/vendor2';
                 set_include_path($vendor2.PATH_SEPARATOR.get_include_path());
                 require_once 'HTMLParser.class.php';
@@ -73,7 +73,7 @@ class HtmlscrapingTest extends \PHPUnit_Framework_TestCase
     public function testGetXmlObject() 
     {
         $sxml = $this->object->getSimplexml($this->response);
-        $this->assertInstanceOf('Diggin_Scraper_Adapter_Wrapper_SimpleXMLElement', $sxml);
+        $this->assertInstanceOf('Diggin\\Scraper\\Adapter\\Wrapper\\SimpleXMLElement', $sxml);
     }
 
     public function testGetXhtml()
@@ -143,7 +143,7 @@ class HtmlscrapingTest extends \PHPUnit_Framework_TestCase
     public function testSetConfigThrowException() {
         $obj = new Htmlscraping();
         
-        $this->setExpectedException('Diggin_Scraper_Adapter_Exception');
+        $this->setExpectedException('Diggin\\Scraper\\Adapter\\Exception');
         $this->getExpectedException($obj->setConfig(false));
     }
 }

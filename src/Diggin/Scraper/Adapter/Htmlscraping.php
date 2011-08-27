@@ -13,8 +13,6 @@
  * ---------------------------------------------------------------------
  * HTMLScraping class
  * ---------------------------------------------------------------------
- * PHP versions 5 (5.1.3 and later)
- * ---------------------------------------------------------------------
  * LICENSE: This source file is subject to the GNU Lesser General Public
  * License as published by the Free Software Foundation;
  * either version 2.1 of the License, or any later version
@@ -31,8 +29,8 @@ namespace Diggin\Scraper\Adapter;
 use Diggin\Http\Charset\Front\UrlRegex,
     Diggin\Http\Charset\Front\DocumentConverter,
     Diggin\Scraper\Adapter\SimplexmlAbstract,
-    Diggin\Scraper\Wrapper\SimpleXMLElement as SimpleXMLElementWrapper,
-    Diggin\Scraper\Exception;
+    Diggin\Scraper\Adapter\Wrapper\SimpleXMLElement as SimpleXMLElementWrapper,
+    Diggin\Scraper\Adapter\Exception;
 
 class Htmlscraping extends SimplexmlAbstract
 {
@@ -78,10 +76,10 @@ class Htmlscraping extends SimplexmlAbstract
         try {
             $this->setConfig(array('pre_ampersand_escape' => true));
             $xhtml = $this->getXhtml($response);
-        } catch (Diggin_Scraper_Adapter_Exception $dsae) {
+        } catch (Exception $dsae) {
             throw $dsae;
-        } catch (Exception $e) {
-            throw new Diggin_Scraper_Adapter_Exception('Unexpected Exception Occured', 0, $e);
+        } catch (\Exception $e) {
+            throw new Exception\RuntimeException('Unexpected Exception Occured', 0, $e);
         }
         
         /*
@@ -103,11 +101,10 @@ class Htmlscraping extends SimplexmlAbstract
             } else {
                 $xml_object = @new SimpleXMLElementWrapper($responseBody);
             }
-        } catch (Diggin_Scraper_Adapter_Exception $dsae) {
+        } catch (Exception $dsae) {
             throw $dsae;
         } catch (\Exception $e) {
-            require_once 'Diggin/Scraper/Adapter/Exception.php';
-            throw new Diggin_Scraper_Adapter_Exception('Unexpected Exception Occured', 0, $e);
+            throw new Exception\RuntimeException('Unexpected Exception Occured', 0, $e);
         }
 
         return $xml_object;
@@ -128,9 +125,13 @@ class Htmlscraping extends SimplexmlAbstract
      */
     final public function getXhtml($response)
     {
+        $contenttype = $response->headers()->get('content-type')->getFieldValue();
+
         // convert to UTF-8
-        $document = array('url' => $this->config['url'], 
-                          'content' => array('body' => $response->getBody(), 'content-type' => $response->headers()->get('content-type')));
+        $document = array(
+            'url' => $this->config['url'], 
+            'content' => array('body' => $response->getBody(), 'content-type' => $contenttype)
+         );
         list($responseBody, $this->backup) = $this->getCharsetFront()->convert($document, $this->backup);
 
         /*
@@ -205,8 +206,7 @@ class Htmlscraping extends SimplexmlAbstract
         $responseBody = preg_replace('/<!DOCTYPE\b[^>]*?>/si', '', $responseBody);
         $responseBody = preg_replace('/<\?xml\b[^>]*?\?>/si', '', $responseBody);
         if (preg_match('/^\s*$/s', $responseBody)) {
-            require_once 'Diggin/Scraper/Adapter/Exception.php';
-            throw new Diggin_Scraper_Adapter_Exception('The entity body became empty after preprocessing.');
+            throw new Exception\RuntimeException('The entity body became empty after preprocessing.');
         }
 
         /*
@@ -237,7 +237,7 @@ class Htmlscraping extends SimplexmlAbstract
             if ($this->config['pre_ampersand_escape']) {
                 $responseBody = str_replace('&', '&amp;', $responseBody);
             }
-            $tidy = new tidy();
+            $tidy = new \tidy();
             $tidy->parseString($responseBody, $this->config['tidy'], 'UTF8');
             $tidy->cleanRepair();
             $responseBody = $tidy->html();
@@ -248,8 +248,7 @@ class Htmlscraping extends SimplexmlAbstract
 
             // use autoload if available
             if (!class_exists('HTMLParser')) {
-                require_once 'Diggin/Scraper/Adapter/HtmlscrapingEnvironmentException.php';
-                throw new Diggin_Scraper_Adapter_HtmlscrapingEnvironmentException('require tidy or HTMLParser class');
+                throw new Exception\HtmlscrapingEnvironmentException('require tidy or HTMLParser class');
             }
             $parser = new HTMLParser;
             $parser->setRule($this->loadXhtmlTransitionalDtd());
@@ -310,11 +309,11 @@ class Htmlscraping extends SimplexmlAbstract
     public function setConfig($config = array())
     {
         if (!is_array($config)) {
-            throw new Diggin_Scraper_Adapter_Exception('Expected array parameter, given ' . gettype($config));
+            throw new Exception\InvalidArgumentException('Expected array parameter, given ' . gettype($config));
         }
         
         if (isset($config['tidy']['output-xhtml']) && $config['tidy']['output-xhtml'] !== true) {
-            throw new Diggin_Scraper_Adapter_Exception('tidy-config "output-xhtml" not as true - not allowed');
+            throw new Exception\InvalidArgumentException('tidy-config "output-xhtml" not as true - not allowed');
         }
         
         foreach ($config as $k => $v) {
