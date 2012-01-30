@@ -1,4 +1,6 @@
 <?php
+namespace Diggin\Scraper\Adapter\Htmlscraping;
+
 /**
  * This class is remodeling of HTMLScraping
  * 
@@ -24,12 +26,11 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  * ---------------------------------------------------------------------
  */
-namespace Diggin\Scraper\Adapter;
-
 use Diggin\Http\Charset\Front\UrlRegex,
     Diggin\Http\Charset\Front\DocumentConverter,
     Diggin\Scraper\Adapter\SimplexmlAbstract,
     Diggin\Scraper\Adapter\Wrapper\SimpleXMLElement as SimpleXMLElementWrapper,
+    Diggin\Scraper\Adapter\Htmlscraping\EnvironmentException,
     Diggin\Scraper\Adapter\Exception;
 
 class Htmlscraping extends SimplexmlAbstract
@@ -248,7 +249,7 @@ class Htmlscraping extends SimplexmlAbstract
 
             // use autoload if available
             if (!class_exists('HTMLParser')) {
-                throw new Exception\HtmlscrapingEnvironmentException('require tidy or HTMLParser class');
+                throw new EnvironmentException('require tidy or HTMLParser class');
             }
             $parser = new HTMLParser;
             $parser->setRule($this->loadXhtmlTransitionalDtd());
@@ -336,5 +337,4 @@ class Htmlscraping extends SimplexmlAbstract
 
         return $this->_charsetFront;
     }
-
 }
