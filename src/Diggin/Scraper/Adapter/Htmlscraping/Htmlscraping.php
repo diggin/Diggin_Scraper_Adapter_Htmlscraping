@@ -28,12 +28,13 @@ namespace Diggin\Scraper\Adapter\Htmlscraping;
  */
 use Diggin\Http\Charset\Front\UrlRegex,
     Diggin\Http\Charset\Front\DocumentConverter,
-    Diggin\Scraper\Adapter\SimplexmlAbstract,
+    Diggin\Scraper\Adapter\SimplexmlAdapter,
+    Diggin\Scraper\Adapter\Stringdapter,
     Diggin\Scraper\Adapter\Wrapper\SimpleXMLElement as SimpleXMLElementWrapper,
     Diggin\Scraper\Adapter\Htmlscraping\EnvironmentException,
     Diggin\Scraper\Adapter\Exception;
 
-class Htmlscraping extends SimplexmlAbstract
+class Htmlscraping implements SimplexmlAdapter, StringAdapter
 {
     /**
      * Configuration array, set using the constructor or using ::setConfig()
@@ -112,6 +113,14 @@ class Htmlscraping extends SimplexmlAbstract
     }
 
     /**
+     * Get as string from Response
+     */
+    public function getString($response)
+    {
+        return $this->getXhtml($response);
+    }
+
+    /**
      * Return array contains formated XHTML string
      * created from the responded HTML of the given URL.
      * array[code] => HTTP status code
@@ -126,7 +135,11 @@ class Htmlscraping extends SimplexmlAbstract
      */
     final public function getXhtml($response)
     {
-        $contenttype = $response->headers()->get('content-type')->getFieldValue();
+        if ($response->headers()->has('content-type')) {
+            $contenttype = $response->headers()->get('content-type')->getFieldValue();
+        } else {
+            $contenttype = null;
+        }
 
         // convert to UTF-8
         $document = array(
