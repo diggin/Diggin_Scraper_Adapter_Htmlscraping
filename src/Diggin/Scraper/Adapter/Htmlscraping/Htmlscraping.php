@@ -29,7 +29,7 @@ namespace Diggin\Scraper\Adapter\Htmlscraping;
 use Diggin\Http\Charset\Front\UrlRegex,
     Diggin\Http\Charset\Front\DocumentConverter,
     Diggin\Scraper\Adapter\SimplexmlAdapter,
-    Diggin\Scraper\Adapter\Stringdapter,
+    Diggin\Scraper\Adapter\StringAdapter,
     Diggin\Scraper\Adapter\Wrapper\SimpleXMLElement as SimpleXMLElementWrapper,
     Diggin\Scraper\Adapter\Htmlscraping\EnvironmentException,
     Diggin\Scraper\Adapter\Exception;
