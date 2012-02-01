@@ -81,7 +81,7 @@ class Htmlscraping implements SimplexmlAdapter, StringAdapter
         } catch (Exception $dsae) {
             throw $dsae;
         } catch (\Exception $e) {
-            throw new Exception\RuntimeException('Unexpected Exception Occured', 0, $e);
+            throw new Exception\RuntimeException('Unexpected Exception Occured ('.$e->getMessage().')', 0, $e);
         }
         
         /*
@@ -106,7 +106,7 @@ class Htmlscraping implements SimplexmlAdapter, StringAdapter
         } catch (Exception $dsae) {
             throw $dsae;
         } catch (\Exception $e) {
-            throw new Exception\RuntimeException('Unexpected Exception Occured', 0, $e);
+            throw new Exception\RuntimeException('Unexpected Exception Occured ('.$e->getMessage().')', 0, $e);
         }
 
         return $xml_object;
@@ -220,7 +220,7 @@ class Htmlscraping implements SimplexmlAdapter, StringAdapter
         $responseBody = preg_replace('/<!DOCTYPE\b[^>]*?>/si', '', $responseBody);
         $responseBody = preg_replace('/<\?xml\b[^>]*?\?>/si', '', $responseBody);
         if (preg_match('/^\s*$/s', $responseBody)) {
-            throw new Exception\RuntimeException('The entity body became empty after preprocessing.');
+            throw new Exception\UnexpectedValueException('The entity body became empty after preprocessing.');
         }
 
         /*
