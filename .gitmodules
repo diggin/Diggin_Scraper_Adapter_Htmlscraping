@@ -4,6 +4,3 @@
 [submodule "vendor/Diggin_Scraper"]
 	path = vendor/Diggin_Scraper
 	url = git://github.com/diggin/Diggin_Scraper.git
-[submodule "vendor/zend-uri"]
-	path = vendor/zend-uri
-	url = git://github.com/knplabs/zend-uri.git
