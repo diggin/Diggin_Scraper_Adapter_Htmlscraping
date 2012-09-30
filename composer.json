@@ -9,9 +9,19 @@
             "email": "sasezaki@gmail.com"
         }
     ],
+    "repositories": [
+        {
+            "type": "composer",
+            "url": "http://packages.zendframework.com/"
+        }
+    ],
     "require": {
         "php":">=5.3.0",
-        "diggin/Diggin_Http_Charset": "*"
+        "diggin/diggin_http_charset": "dev-master"
+    },
+    "require-dev": {
+        "zendframework/zend-http": "2.*",
+        "diggin/Diggin_Scraper": "dev-master"
     },
     "autoload": {
         "psr-0":{
