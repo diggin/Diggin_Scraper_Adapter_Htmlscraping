@@ -135,8 +135,8 @@ class Htmlscraping implements SimplexmlAdapter, StringAdapter
      */
     final public function getXhtml($response)
     {
-        if ($response->headers()->has('content-type')) {
-            $contenttype = $response->headers()->get('content-type')->getFieldValue();
+        if ($response->getHeaders()->has('content-type')) {
+            $contenttype = $response->getHeaders()->get('content-type')->getFieldValue();
         } else {
             $contenttype = null;
         }
