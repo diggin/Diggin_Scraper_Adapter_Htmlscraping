@@ -1,17 +1,16 @@
 <?php
-
 namespace DigginTest\Scraper\Adapter;
-use Diggin\Scraper\Adapter\Htmlscraping,
-    Zend\Http\Response;
+use PHPUnit_Framework_TestCase;
+use Diggin\Scraper\Adapter\Htmlscraping\Htmlscraping;
+use Zend\Http\Response;
 
 /**
  * Test class for Diggin_Scraper_Adapter_Htmlscraping.
  */
-class HtmlscrapingTest extends \PHPUnit_Framework_TestCase
+class HtmlscrapingTest extends PHPUnit_Framework_TestCase
 {
     /**
      * @var    Diggin_Scraper_Adapter_Htmlscraping
-     * @access protected
      */
     protected $object;
     
@@ -61,7 +60,7 @@ class HtmlscrapingTest extends \PHPUnit_Framework_TestCase
                 //$this->object->getXhtml($this->response);
                 $this->object->getSimplexml($this->response);
                 $this->fail('IF tidy is not available, should raise Exception ');
-            } catch (\Diggin\Scraper\Adapter\HtmlscrapingEnvironmentException $e) {
+            } catch (\Diggin\Scraper\Adapter\Htmlscraping\EnvironmentException $e) {
                 $vendor2 = dirname(dirname(dirname(__DIR__))).'/vendor2';
                 set_include_path($vendor2.PATH_SEPARATOR.get_include_path());
                 require_once 'HTMLParser.class.php';
@@ -87,7 +86,6 @@ class HtmlscrapingTest extends \PHPUnit_Framework_TestCase
 
     public function testNosetConfigAmpasandEscape()
     {
-    
         $asxml = $this->object->getSimplexml($this->response)->asXML();
         $asx = explode('test', $asxml);
         $this->assertEquals('&amp;', $asx[1]);
@@ -114,8 +112,8 @@ class HtmlscrapingTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('&amp;', $xh2[1]);
     }
     
-    public function testReadData() {
-        
+    public function testReadData() 
+    {
         $this->object->setConfig(array('url' => 'http://test.org/'));
         
         $this->assertEquals($this->object->getSimplexml($this->response),
