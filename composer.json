@@ -1,0 +1,21 @@
+{
+    "name": "diggin/Diggin_Scraper_Adapter_Htmlscraping",
+    "description": "A response adapter for Diggin_Scraper",
+    "license":"LGPL-2.0+",
+    "minimum-stability": "dev",
+    "authors": [
+        {
+            "name": "sasezaki",
+            "email": "sasezaki@gmail.com"
+        }
+    ],
+    "require": {
+        "php":">=5.3.0",
+        "diggin/Diggin_Http_Charset": "*"
+    },
+    "autoload": {
+        "psr-0":{
+            "Diggin\\Scraper\\Adapter/Htmlscraping":"src/"
+        }
+    }
+}
