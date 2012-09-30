@@ -112,14 +112,6 @@ class HtmlscrapingTest extends PHPUnit_Framework_TestCase
         $this->assertEquals('&amp;', $xh2[1]);
     }
     
-    public function testReadData() 
-    {
-        $this->object->setConfig(array('url' => 'http://test.org/'));
-        
-        $this->assertEquals($this->object->getSimplexml($this->response),
-                            $this->object->readData($this->response));
-    }
-
     /**
      * testSetConfig().
      */
