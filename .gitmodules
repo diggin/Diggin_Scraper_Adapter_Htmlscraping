@@ -1,6 +1,3 @@
-[submodule "vendor/Diggin_Http_Charset"]
-	path = vendor/Diggin_Http_Charset
-	url = git://github.com/diggin/Diggin_Http_Charset.git
 [submodule "vendor/Diggin_Scraper"]
 	path = vendor/Diggin_Scraper
 	url = git://github.com/diggin/Diggin_Scraper.git
