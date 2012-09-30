@@ -26,13 +26,13 @@ namespace Diggin\Scraper\Adapter\Htmlscraping;
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  * ---------------------------------------------------------------------
  */
-use Diggin\Http\Charset\Front\UrlRegex,
-    Diggin\Http\Charset\Front\DocumentConverter,
-    Diggin\Scraper\Adapter\SimplexmlAdapter,
-    Diggin\Scraper\Adapter\StringAdapter,
-    Diggin\Scraper\Adapter\Wrapper\SimpleXMLElement as SimpleXMLElementWrapper,
-    Diggin\Scraper\Adapter\Htmlscraping\EnvironmentException,
-    Diggin\Scraper\Adapter\Exception;
+use Diggin\Http\Charset\Front\UrlRegex;
+use Diggin\Http\Charset\Front\DocumentConverter;
+use Diggin\Scraper\Adapter\SimplexmlAdapter;
+use Diggin\Scraper\Adapter\StringAdapter;
+use Diggin\Scraper\Adapter\Wrapper\SimpleXMLElement as SimpleXMLElementWrapper;
+use Diggin\Scraper\Adapter\Htmlscraping\EnvironmentException;
+use Diggin\Scraper\Adapter\Exception;
 
 class Htmlscraping implements SimplexmlAdapter, StringAdapter
 {
