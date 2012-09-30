@@ -142,11 +142,11 @@ class Htmlscraping implements SimplexmlAdapter, StringAdapter
         }
 
         // convert to UTF-8
-        $document = array(
-            'url' => $this->config['url'], 
-            'content' => array('body' => $response->getBody(), 'content-type' => $contenttype)
-         );
-        list($responseBody, $this->backup) = $this->getCharsetFront()->convert($document, $this->backup);
+        list($responseBody, $this->backup) = 
+            $this->getCharsetFront()->convert($response->getBody(), 
+                                              array('url' => $this->config['url'],
+                                                    'content-type' => $contenttype), 
+                                              $this->backup);
 
         /*
          * Initialize the backups.
