@@ -1,5 +1,5 @@
 {
-    "name": "diggin/Diggin_Scraper_Adapter_Htmlscraping",
+    "name": "diggin/diggin_scraper_adapter_htmlscraping",
     "description": "A response adapter for Diggin_Scraper",
     "license":"LGPL-2.0+",
     "minimum-stability": "dev",
