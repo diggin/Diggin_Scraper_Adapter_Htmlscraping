@@ -1,5 +1,5 @@
 {
-    "name": "diggin/diggin_scraper_adapter_htmlscraping",
+    "name": "diggin/diggin-scraper-adapter-htmlscraping",
     "description": "A response adapter for Diggin_Scraper",
     "license":"LGPL-2.0+",
     "minimum-stability": "dev",
@@ -17,11 +17,11 @@
     ],
     "require": {
         "php":">=5.3.0",
-        "diggin/diggin_http_charset": "dev-master"
+        "diggin/diggin-http-charset": "dev-master"
     },
     "require-dev": {
         "zendframework/zend-http": "2.*",
-        "diggin/Diggin_Scraper": "dev-master"
+        "diggin/diggin-scraper": "dev-master"
     },
     "autoload": {
         "psr-0":{
