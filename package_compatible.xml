@@ -6,29 +6,26 @@
 </summary>
  <description>
 Package detailed description here (found in README)</description>
- <lead>
-  <name>Your Name</name>
-  <user>handle</user>
-  <email>handle@php.net</email>
-  <active>yes</active>
- </lead>
- <date>2011-08-28</date>
- <time>05:13:32</time>
+ <date>2013-03-09</date>
+ <time>23:29:44</time>
  <version>
   <release>0.1.0</release>
   <api>0.1.0</api>
  </version>
  <stability>
-  <release>alpha</release>
+  <release>devel</release>
   <api>alpha</api>
  </stability>
  <license uri="http://www.opensource.org/licenses/bsd-license.php">New BSD License</license>
- <notes>Package Diggin_Scraper_Adapter_Htmlscraping release notes for version 0.1.0.
-
-Package Diggin_Scraper_Adapter_Htmlscraping API release notes for version 0.1.0.</notes>
  <contents>
   <dir name="/">
-   <file role="php" name="php/Diggin/Scraper/Adapter/Htmlscraping/Main.php"/>
+   <file role="test" name="test/pear.diggin.musicrider.com/Diggin_Scraper_Adapter_Htmlscraping/vendor2/vendor2/xhtml1-transitional_dtd.inc.php"/>
+   <file role="test" name="test/pear.diggin.musicrider.com/Diggin_Scraper_Adapter_Htmlscraping/vendor2/vendor2/HTMLParser.class.php"/>
+   <file role="test" name="test/pear.diggin.musicrider.com/Diggin_Scraper_Adapter_Htmlscraping/phpunit.xml"/>
+   <file role="test" name="test/pear.diggin.musicrider.com/Diggin_Scraper_Adapter_Htmlscraping/Diggin/Scraper/Adapter/Diggin/Scraper/Adapter/HtmlscrapingTest.php"/>
+   <file role="test" name="test/pear.diggin.musicrider.com/Diggin_Scraper_Adapter_Htmlscraping/bootstrap.php"/>
+   <file role="php" name="php/Diggin/Scraper/Adapter/Htmlscraping/Htmlscraping.php"/>
+   <file role="php" name="php/Diggin/Scraper/Adapter/Htmlscraping/EnvironmentException.php"/>
   </dir>
  </contents>
  <dependencies>
@@ -43,7 +40,13 @@ Package Diggin_Scraper_Adapter_Htmlscraping API release notes for version 0.1.0.
  </dependencies>
  <phprelease>
   <filelist>
-   <install name="php/Diggin/Scraper/Adapter/Htmlscraping/Main.php" as="Diggin/Scraper/Adapter/Htmlscraping/Main.php"/>
+   <install name="php/Diggin/Scraper/Adapter/Htmlscraping/EnvironmentException.php" as="Diggin/Scraper/Adapter/Htmlscraping/EnvironmentException.php"/>
+   <install name="php/Diggin/Scraper/Adapter/Htmlscraping/Htmlscraping.php" as="Diggin/Scraper/Adapter/Htmlscraping/Htmlscraping.php"/>
+   <install name="test/pear.diggin.musicrider.com/Diggin_Scraper_Adapter_Htmlscraping/bootstrap.php" as="Diggin_Scraper_Adapter_Htmlscraping/bootstrap.php"/>
+   <install name="test/pear.diggin.musicrider.com/Diggin_Scraper_Adapter_Htmlscraping/Diggin/Scraper/Adapter/Diggin/Scraper/Adapter/HtmlscrapingTest.php" as="Diggin_Scraper_Adapter_Htmlscraping/Diggin/Scraper/Adapter/Diggin/Scraper/Adapter/HtmlscrapingTest.php"/>
+   <install name="test/pear.diggin.musicrider.com/Diggin_Scraper_Adapter_Htmlscraping/phpunit.xml" as="Diggin_Scraper_Adapter_Htmlscraping/phpunit.xml"/>
+   <install name="test/pear.diggin.musicrider.com/Diggin_Scraper_Adapter_Htmlscraping/vendor2/vendor2/HTMLParser.class.php" as="Diggin_Scraper_Adapter_Htmlscraping/vendor2/vendor2/HTMLParser.class.php"/>
+   <install name="test/pear.diggin.musicrider.com/Diggin_Scraper_Adapter_Htmlscraping/vendor2/vendor2/xhtml1-transitional_dtd.inc.php" as="Diggin_Scraper_Adapter_Htmlscraping/vendor2/vendor2/xhtml1-transitional_dtd.inc.php"/>
   </filelist>
  </phprelease>
 </package>

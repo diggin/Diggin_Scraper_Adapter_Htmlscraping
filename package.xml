@@ -12,8 +12,8 @@ Package detailed description here (found in README)</description>
   <email>handle@php.net</email>
   <active>yes</active>
  </lead>
- <date>2011-08-28</date>
- <time>05:13:32</time>
+ <date>2013-03-09</date>
+ <time>23:29:44</time>
  <version>
   <release>0.1.0</release>
   <api>0.1.0</api>
@@ -33,11 +33,27 @@ Package Diggin_Scraper_Adapter_Htmlscraping API release notes for version 0.1.0.
      <dir name="Scraper">
       <dir name="Adapter">
        <dir name="Htmlscraping">
-        <file role="php" name="Main.php"/>
+        <file role="php" name="EnvironmentException.php"/>
+        <file role="php" name="Htmlscraping.php"/>
        </dir>
       </dir>
      </dir>
     </dir>
+   </dir>
+   <dir name="tests" baseinstalldir="/">
+    <dir name="Diggin">
+     <dir name="Scraper">
+      <dir name="Adapter">
+       <file role="test" name="HtmlscrapingTest.php"/>
+      </dir>
+     </dir>
+    </dir>
+    <dir name="vendor2">
+     <file role="test" name="HTMLParser.class.php"/>
+     <file role="test" name="xhtml1-transitional_dtd.inc.php"/>
+    </dir>
+    <file role="test" name="bootstrap.php"/>
+    <file role="test" name="phpunit.xml"/>
    </dir>
   </dir>
  </contents>
