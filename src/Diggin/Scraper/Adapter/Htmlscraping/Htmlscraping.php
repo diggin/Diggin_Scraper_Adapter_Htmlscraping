@@ -33,6 +33,7 @@ use Diggin\Scraper\Adapter\StringAdapter;
 use Diggin\Scraper\Adapter\Wrapper\SimpleXMLElement as SimpleXMLElementWrapper;
 use Diggin\Scraper\Adapter\Htmlscraping\EnvironmentException;
 use Diggin\Scraper\Adapter\Exception;
+use HTMLParser;
 
 class Htmlscraping implements SimplexmlAdapter, StringAdapter
 {
