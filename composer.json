@@ -1,6 +1,6 @@
 {
     "name": "diggin/diggin-scraper-adapter-htmlscraping",
-    "description": "A response adapter for Diggin_Scraper",
+    "description": "A response adapter for diggin-scraper",
     "license":"LGPL-2.0+",
     "minimum-stability": "dev",
     "authors": [
@@ -9,18 +9,12 @@
             "email": "sasezaki@gmail.com"
         }
     ],
-    "repositories": [
-        {
-            "type": "composer",
-            "url": "http://packages.zendframework.com/"
-        }
-    ],
     "require": {
         "php":">=5.3.3",
         "diggin/diggin-http-charset": "dev-master"
     },
     "require-dev": {
-        "zendframework/zend-http": "2.1.*",
+        "zendframework/zend-http": "2.2.*",
         "diggin/diggin-scraper": "dev-master"
     },
     "autoload": {
