@@ -39,6 +39,7 @@ class HtmlscrapingTest extends PHPUnit_Framework_TestCase
                            '<head>'.PHP_EOL.
                            '<body>'.PHP_EOL.
                            'this is test&amp;test<br />'.PHP_EOL.
+                           '<script type="text/javascript"><!--document.write("hello");//-></script>'.
                            '</body>'.PHP_EOL.
                            '</html>';
         $response_str = "$responseHeader\r\n\r\n$responseBody";
