@@ -10,7 +10,7 @@
     ],
     "require": {
         "php":">=5.3.3",
-        "diggin/diggin-http-charset": "dev-master"
+        "diggin/diggin-http-charset": "~0.8"
     },
     "require-dev": {
         "zendframework/zend-http": "~2.3",
