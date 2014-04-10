@@ -13,8 +13,10 @@
         "diggin/diggin-http-charset": "dev-master"
     },
     "require-dev": {
-        "zendframework/zend-http": "2.2.*",
-        "diggin/diggin-scraper": "dev-master"
+        "zendframework/zend-http": "~2.3",
+        "diggin/diggin-scraper": "dev-master",
+        "phpunit/phpunit": "~3.7",
+        "satooshi/php-coveralls": "~0.6"
     },
     "autoload": {
         "psr-0":{
