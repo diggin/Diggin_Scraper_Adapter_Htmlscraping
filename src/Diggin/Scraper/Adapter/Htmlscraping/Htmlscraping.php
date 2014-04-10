@@ -52,7 +52,7 @@ class Htmlscraping implements SimplexmlAdapter, StringAdapter
               );
 
     /**
-     * @var Diggin_Http_Response_Charset_Front_EncodeInterface
+     * @var DocumentConverter
      */
     private $_charsetFront;
 
@@ -71,8 +71,8 @@ class Htmlscraping implements SimplexmlAdapter, StringAdapter
     /**
      * Casts a SimpleXMLElement
      *
-     * @param Zend_Http_Response $response
-     * @return SimpleXMLElement
+     * @param \Zend\Http\Response $response
+     * @return \SimpleXMLElement
      */
     public function getSimplexml($response)
     {
