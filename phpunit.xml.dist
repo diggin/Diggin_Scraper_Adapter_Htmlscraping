@@ -1,12 +1,12 @@
-<phpunit bootstrap="./bootstrap.php" colors="true">
+<phpunit bootstrap="./tests/bootstrap.php" colors="true">
     
     <testsuite name="Diggin_Scraper_Adapter_Htmlscraping Test Suite">
-     <directory>./</directory>
+     <directory>./tests/</directory>
     </testsuite>
 
     <filter>
         <whitelist>
-            <directory suffix=".php">../src/</directory>
+            <directory suffix=".php">./src/</directory>
         </whitelist>
     </filter>
 </phpunit>
